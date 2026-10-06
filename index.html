@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cartas gradeadas · Ruma Store</title>
+<meta name="description" content="Catálogo de cartas Pokémon gradeadas PSA, CGC y chinas de Ruma Store, Lima. Elige una por una o arma tu carrito y pídelo por WhatsApp.">
+<meta property="og:title" content="Cartas gradeadas · Ruma Store">
+<meta property="og:description" content="PSA, CGC y slabs chinos. Escoge 1 x 1 o arma tu carrito y pídelo por WhatsApp.">
+<meta name="theme-color" content="#4B2E83">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#4B2E83; --brand-m:#8E64E2; --brand-l:#A27EEF; --sec:#FFB727; --sec-m:#FCD611;
+  --bg:#FFF8D8; --blue:#2952BB; --red:#FF3B3B; --ink:#131316; --white:#fff;
+  --card:#fff; --line:rgba(75,46,131,.14); --muted:#5b5470; --shadow:0 10px 30px -12px rgba(75,46,131,.35);
+}
+:root[data-theme="dark"]{ --bg:#17102b; --card:#221845; --ink:#fff6dc; --muted:#c3b8e6; --line:rgba(255,255,255,.14); --shadow:0 10px 30px -12px rgba(0,0,0,.6); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#17102b; --card:#221845; --ink:#fff6dc; --muted:#c3b8e6; --line:rgba(255,255,255,.14); --shadow:0 10px 30px -12px rgba(0,0,0,.6);} }
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:Quicksand,system-ui,sans-serif;font-weight:500;line-height:1.45;min-height:100vh;
+  background-image:radial-gradient(circle at 12% 0%,rgba(162,126,239,.28),transparent 42%),radial-gradient(circle at 100% 20%,rgba(255,183,39,.22),transparent 40%);background-attachment:fixed}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.display{font-family:'Luckiest Guy',cursive;font-weight:400;letter-spacing:.02em}
+
+/* header */
+header{position:sticky;top:0;z-index:30;background:var(--brand);color:#fff;box-shadow:0 6px 20px -10px rgba(0,0,0,.5)}
+.bar{display:flex;align-items:center;gap:12px;height:62px}
+.logo{font-size:28px;color:var(--sec);text-shadow:2px 2px 0 #131316;text-decoration:none;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.logo small{font-family:Quicksand;font-weight:700;font-size:12px;color:#fff;text-shadow:none;opacity:.85;letter-spacing:.08em;text-transform:uppercase}
+.spacer{flex:1}
+.cartbtn{position:relative;display:flex;align-items:center;gap:8px;background:var(--sec);color:#131316;border-radius:999px;padding:9px 16px;font-weight:700;border:2px solid #131316;box-shadow:3px 3px 0 #131316;transition:transform .12s}
+.cartbtn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #131316}
+.cartbtn .n{background:#131316;color:var(--sec);border-radius:999px;min-width:22px;height:22px;display:grid;place-items:center;font-size:12px;padding:0 6px}
+
+/* hero */
+.hero{padding:34px 0 10px}
+.hero h1{font-size:clamp(34px,6.4vw,64px);line-height:1;color:var(--brand);text-shadow:3px 3px 0 var(--sec)}
+:root[data-theme="dark"] .hero h1{color:var(--sec);text-shadow:3px 3px 0 #131316}
+.hero p{margin-top:12px;max-width:560px;color:var(--muted);font-size:17px}
+
+/* controls */
+.controls{position:sticky;top:62px;z-index:20;padding:12px 0;background:linear-gradient(var(--bg) 70%,transparent)}
+.tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 6px}
+.tab{flex:0 0 auto;padding:10px 18px;border-radius:999px;border:2px solid var(--brand);font-weight:700;background:var(--card);color:var(--brand);display:flex;gap:8px;align-items:center;transition:.15s}
+:root[data-theme="dark"] .tab{color:var(--ink);border-color:var(--brand-l)}
+.tab .c{font-size:12px;background:var(--brand);color:#fff;border-radius:999px;padding:1px 8px}
+.tab[aria-selected="true"]{background:var(--brand);color:#fff;box-shadow:3px 3px 0 var(--sec)}
+.tab[aria-selected="true"] .c{background:var(--sec);color:#131316}
+.row2{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+.search{flex:1 1 220px;position:relative}
+.search input,.sort{width:100%;padding:11px 14px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:inherit;outline:none}
+.search input:focus,.sort:focus{border-color:var(--brand-m)}
+.sort{width:auto;flex:0 0 auto}
+
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px;padding:12px 0 90px}
+@media(max-width:520px){.grid{grid-template-columns:repeat(2,1fr);gap:12px}}
+.card{background:var(--card);border-radius:20px;border:2px solid var(--line);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:transform .18s,border-color .18s;animation:rise .45s both}
+.card:hover{transform:translateY(-4px);border-color:var(--brand-m)}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.shot{aspect-ratio:3/4;background:linear-gradient(160deg,#6a47ad,#2e1b57);display:grid;place-items:center;position:relative;cursor:pointer;padding:10px}
+.shot img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 12px 14px rgba(0,0,0,.45));transition:transform .25s}
+.card:hover .shot img{transform:scale(1.04) rotate(-1deg)}
+.badge{position:absolute;top:10px;left:10px;background:var(--sec);color:#131316;font-weight:700;font-size:12px;border:2px solid #131316;border-radius:10px;padding:2px 8px;box-shadow:2px 2px 0 #131316}
+.incart{position:absolute;top:10px;right:10px;background:#1fa35b;color:#fff;border-radius:10px;font-size:12px;font-weight:700;padding:3px 8px;display:none}
+.card.in .incart{display:block}
+.info{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.name{font-size:13.5px;line-height:1.3;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;min-height:53px}
+.price{font-family:'Luckiest Guy';font-size:28px;color:var(--brand);line-height:1}
+:root[data-theme="dark"] .price{color:var(--sec)}
+.price small{font-size:15px;margin-right:2px}
+.add{margin-top:auto;background:var(--brand);color:#fff;border-radius:12px;padding:10px;font-weight:700;border:2px solid #131316;box-shadow:3px 3px 0 #131316;transition:transform .1s}
+.add:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #131316}
+.card.in .add{background:var(--card);color:var(--brand);}
+:root[data-theme="dark"] .card.in .add{color:var(--ink)}
+
+.empty{grid-column:1/-1;text-align:center;padding:60px 10px;color:var(--muted)}
+.empty .display{font-size:30px;color:var(--brand);margin-bottom:8px}
+:root[data-theme="dark"] .empty .display{color:var(--sec)}
+
+/* modal */
+dialog{border:0;padding:0;background:transparent;max-width:100vw;max-height:100vh;color:var(--ink)}
+dialog::backdrop{background:rgba(19,19,22,.72);backdrop-filter:blur(4px)}
+.modal{width:min(940px,96vw);max-height:94vh;overflow:auto;margin:3vh auto;background:var(--bg);border-radius:24px;border:3px solid #131316;box-shadow:8px 8px 0 #131316;display:grid;grid-template-columns:1.05fr 1fr}
+@media(max-width:760px){.modal{grid-template-columns:1fr}}
+.stage{background:linear-gradient(160deg,#6a47ad,#2e1b57);position:relative;min-height:340px;display:grid;place-items:center;padding:16px;overflow:hidden}
+.stage img{max-width:100%;max-height:72vh;object-fit:contain;cursor:zoom-in;transition:transform .2s;transform-origin:center;filter:drop-shadow(0 18px 20px rgba(0,0,0,.5));touch-action:none}
+.stage img.zoom{transform:scale(2.1);cursor:zoom-out}
+.sides{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;background:rgba(0,0,0,.4);padding:4px;border-radius:999px}
+.sides button{padding:6px 14px;border-radius:999px;font-weight:700;color:#fff;font-size:14px}
+.sides button[aria-pressed="true"]{background:var(--sec);color:#131316}
+.detail{padding:24px 22px;display:flex;flex-direction:column;gap:14px}
+.detail h2{font-size:18px;line-height:1.3}
+.detail .price{font-size:44px}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700}
+.note{font-size:13.5px;color:var(--muted)}
+.close{position:absolute;top:10px;right:10px;z-index:3;width:38px;height:38px;border-radius:50%;background:#fff;color:#131316;border:2px solid #131316;font-size:20px;line-height:1;box-shadow:2px 2px 0 #131316}
+.cta{background:var(--sec);color:#131316;border:2px solid #131316;box-shadow:4px 4px 0 #131316;border-radius:14px;padding:14px;font-weight:700;font-size:17px;transition:transform .1s}
+.cta:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #131316}
+.cta.wa{background:#25D366;color:#06210f}
+.cta[disabled]{opacity:.5;pointer-events:none}
+
+/* cart drawer */
+.drawer{position:fixed;inset:0;z-index:50;display:none}
+.drawer.open{display:block}
+.drawer .scrim{position:absolute;inset:0;background:rgba(19,19,22,.6);backdrop-filter:blur(3px);animation:fade .2s}
+.panel{position:absolute;right:0;top:0;bottom:0;width:min(440px,100vw);background:var(--bg);border-left:3px solid #131316;display:flex;flex-direction:column;animation:slide .25s}
+@keyframes slide{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0}}
+.panel header{position:static;background:var(--brand);padding:14px 18px;display:flex;align-items:center;gap:10px;box-shadow:none}
+.panel header h3{font-size:26px;color:var(--sec);text-shadow:2px 2px 0 #131316}
+.items{flex:1;overflow:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.item{display:grid;grid-template-columns:62px 1fr auto;gap:12px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:8px}
+.item .th{width:62px;aspect-ratio:3/4;border-radius:10px;background:linear-gradient(160deg,#6a47ad,#2e1b57);display:grid;place-items:center;padding:3px}
+.item .th img{max-width:100%;max-height:100%;object-fit:contain}
+.item .t{font-size:13px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.item .p{font-weight:700;color:var(--brand);margin-top:3px}
+:root[data-theme="dark"] .item .p{color:var(--sec)}
+.rm{width:34px;height:34px;border-radius:10px;border:2px solid var(--line);color:var(--red);font-size:18px}
+.foot{padding:14px 16px calc(14px + env(safe-area-inset-bottom));border-top:2px solid var(--line);display:flex;flex-direction:column;gap:10px;background:var(--card)}
+.total{display:flex;justify-content:space-between;align-items:baseline;font-weight:700}
+.total .display{font-size:34px;color:var(--brand)}
+:root[data-theme="dark"] .total .display{color:var(--sec)}
+.mini{font-size:12.5px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);background:#131316;color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:80}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+footer{padding:30px 0 50px;color:var(--muted);font-size:14px;text-align:center}
+.sr{position:absolute;left:-9999px}
+a{color:inherit}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <a class="logo display" href="./" aria-label="Ruma Store">RUMA <small>Cartas gradeadas</small></a>
+    <div class="spacer"></div>
+    <button class="cartbtn" id="openCart" aria-label="Abrir carrito">🛒 Carrito <span class="n" id="cartN">0</span></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1 class="display">Cartas con<br>certificado</h1>
+    <p>Cada slab es única: pieza gradeada por PSA, CGC o casas chinas, fotografiada de frente y dorso. Elige una o arma tu carrito y la coordinamos por WhatsApp.</p>
+  </section>
+
+  <div class="controls">
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="row2">
+      <div class="search"><label class="sr" for="q">Buscar</label><input id="q" type="search" placeholder="Buscar carta, set o número…" autocomplete="off"></div>
+      <label class="sr" for="sort">Ordenar</label>
+      <select class="sort" id="sort">
+        <option value="pv-desc">Mayor precio</option>
+        <option value="pv-asc">Menor precio</option>
+        <option value="grado-desc">Mejor grado</option>
+        <option value="nombre">Nombre A–Z</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid" id="grid" aria-live="polite"></div>
+</main>
+
+<footer class="wrap">Ruma Store · Lima, Perú · Piezas únicas: si alguien se te adelanta, te avisamos por WhatsApp.</footer>
+
+<dialog id="dlg" aria-label="Detalle de carta">
+  <div class="modal" id="modal"></div>
+</dialog>
+
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="scrim" id="scrim"></div>
+  <aside class="panel" role="dialog" aria-label="Carrito">
+    <header><h3 class="display">Tu carrito</h3><div class="spacer"></div><button class="close" style="position:static" id="closeCart" aria-label="Cerrar">✕</button></header>
+    <div class="items" id="items"></div>
+    <div class="foot">
+      <div class="total"><span>Total</span><span class="display" id="total">S/ 0</span></div>
+      <button class="cta wa" id="wa">Pedir por WhatsApp</button>
+      <p class="mini">No se cobra nada en esta página. Enviamos tu lista a WhatsApp y coordinamos pago y entrega contigo.</p>
+    </div>
+  </aside>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+'use strict';
+const SB_URL='https://jfekxykuasvmanmolbwg.supabase.co';
+const SB_KEY='sb_publishable_0tjN9mXrJJzLRGt_c51QxQ_mDV9FTph';
+const WA='51926999771';
+const ORDEN=['PSA','CGC','Chinas'];
+const ETIQ={PSA:'PSA',CGC:'CGC',Chinas:'Chinas'};
+
+const $=s=>document.querySelector(s);
+const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[kk,v]of Object.entries(a)){if(kk==='class')e.className=v;else if(kk.startsWith('on'))e.addEventListener(kk.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(kk,v)}k.flat().forEach(c=>e.append(c?.nodeType?c:document.createTextNode(c??'')));return e};
+const soles=n=>'S/ '+Number(n).toLocaleString('es-PE',{maximumFractionDigits:2});
+const safeUrl=u=>{try{const x=new URL(u);return x.origin===SB_URL?x.href:''}catch{return ''}};
+
+let cartas=[],tab=null,cart=[]; // cart: ids
+const store={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v)}catch{}}};
+try{cart=JSON.parse(store.get('ruma_cartas_cart')||'[]').filter(x=>typeof x==='string')}catch{cart=[]}
+const saveCart=()=>store.set('ruma_cartas_cart',JSON.stringify(cart));
+const byId=id=>cartas.find(c=>c.id===id);
+
+async function load(){
+  const g=$('#grid');g.replaceChildren(el('div',{class:'empty'},'Cargando cartas…'));
+  try{
+    const r=await fetch(`${SB_URL}/rest/v1/cartas?select=id,nombre,empresa,grado,pv,foto_frente,foto_frente_mini,foto_dorso,foto_dorso_mini&order=pv.desc`,{headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY}});
+    if(!r.ok)throw new Error(r.status);
+    cartas=(await r.json()).filter(c=>safeUrl(c.foto_frente));
+  }catch(e){
+    g.replaceChildren(el('div',{class:'empty'},el('div',{class:'display'},'Ups'),'No pudimos cargar el catálogo. Intenta de nuevo en un momento.'));return;
+  }
+  cart=cart.filter(id=>byId(id)); saveCart();
+  tab=ORDEN.find(e=>cartas.some(c=>c.empresa===e))||ORDEN[0];
+  renderTabs();render();renderCart();
+}
+
+function renderTabs(){
+  const t=$('#tabs');t.replaceChildren();
+  ORDEN.forEach(e=>{
+    const n=cartas.filter(c=>c.empresa===e).length;
+    t.append(el('button',{class:'tab',role:'tab','aria-selected':String(e===tab),onclick:()=>{tab=e;renderTabs();render()}},ETIQ[e],el('span',{class:'c'},String(n))));
+  });
+}
+
+function sorted(list){
+  const s=$('#sort').value;
+  const g=c=>parseFloat(c.grado)||0;
+  return [...list].sort((a,b)=>s==='pv-asc'?a.pv-b.pv:s==='grado-desc'?g(b)-g(a)||b.pv-a.pv:s==='nombre'?a.nombre.localeCompare(b.nombre):b.pv-a.pv);
+}
+
+function render(){
+  const q=$('#q').value.trim().toLowerCase();
+  const list=sorted(cartas.filter(c=>c.empresa===tab&&(!q||c.nombre.toLowerCase().includes(q))));
+  const g=$('#grid');g.replaceChildren();
+  if(!list.length){
+    g.append(el('div',{class:'empty'},el('div',{class:'display'},cartas.length?'Nada por aquí':'Muy pronto'),cartas.length?'Prueba con otra búsqueda o revisa otra casa gradeadora.':'Estamos fotografiando las cartas. Vuelve en unos días.'));return;
+  }
+  list.forEach((c,i)=>g.append(cardEl(c,i)));
+}
+
+function cardEl(c,i){
+  const open=()=>openDetail(c.id);
+  const inC=cart.includes(c.id);
+  const img=el('img',{src:safeUrl(c.foto_frente_mini)||safeUrl(c.foto_frente),alt:`${c.nombre} — frente`,loading:'lazy',decoding:'async'});
+  return el('article',{class:'card'+(inC?' in':''),'data-id':c.id,style:`animation-delay:${Math.min(i,12)*40}ms`},
+    el('div',{class:'shot',onclick:open,role:'button',tabindex:'0',onkeydown:e=>{if(e.key==='Enter')open()}},img,
+      el('span',{class:'badge'},`${c.empresa} ${c.grado||''}`.trim()),el('span',{class:'incart'},'En carrito ✓')),
+    el('div',{class:'info'},
+      el('div',{class:'name',onclick:open},c.nombre),
+      el('div',{class:'price'},el('small',{},'S/'),String(Number(c.pv).toLocaleString('es-PE'))),
+      el('button',{class:'add',onclick:()=>toggle(c.id)},inC?'Quitar del carrito':'Agregar al carrito')));
+}
+
+function toggle(id){
+  const i=cart.indexOf(id);
+  if(i>=0){cart.splice(i,1);toast('Quitada del carrito')}else{cart.push(id);toast('Agregada al carrito 🛒')}
+  saveCart();render();renderCart();
+  if($('#dlg').open)openDetail(id,true);
+}
+
+/* detail */
+let side='frente';
+function openDetail(id,keep){
+  const c=byId(id);if(!c)return;
+  if(!keep)side='frente';
+  const tieneDorso=!!safeUrl(c.foto_dorso);
+  if(side==='dorso'&&!tieneDorso)side='frente';
+  const src=safeUrl(side==='dorso'?c.foto_dorso:c.foto_frente);
+  const img=el('img',{src,alt:`${c.nombre} — ${side}`,onclick:e=>e.target.classList.toggle('zoom')});
+  const sides=tieneDorso?el('div',{class:'sides'},
+    el('button',{'aria-pressed':String(side==='frente'),onclick:()=>{side='frente';openDetail(id,true)}},'Frente'),
+    el('button',{'aria-pressed':String(side==='dorso'),onclick:()=>{side='dorso';openDetail(id,true)}},'Dorso')):null;
+  const inC=cart.includes(id);
+  $('#modal').replaceChildren(
+    el('div',{class:'stage'},el('button',{class:'close',onclick:()=>$('#dlg').close(),'aria-label':'Cerrar'},'✕'),img,sides),
+    el('div',{class:'detail'},
+      el('div',{class:'meta'},el('span',{class:'chip'},c.empresa),c.grado?el('span',{class:'chip'},'Grado '+c.grado):null,el('span',{class:'chip'},'Pieza única')),
+      el('h2',{},c.nombre),
+      el('div',{class:'price'},el('small',{},'S/'),String(Number(c.pv).toLocaleString('es-PE'))),
+      el('p',{class:'note'},'Toca la imagen para acercar y revisar la slab. Las fotos son de la carta exacta que recibirás.'),
+      el('button',{class:'cta',onclick:()=>toggle(id)},inC?'Quitar del carrito':'Agregar al carrito'),
+      el('button',{class:'cta wa',onclick:()=>wa([id])},'Pedir solo esta por WhatsApp')));
+  if(!$('#dlg').open)$('#dlg').showModal();
+}
+$('#dlg').addEventListener('click',e=>{if(e.target===$('#dlg'))$('#dlg').close()});
+
+/* cart */
+function renderCart(){
+  $('#cartN').textContent=cart.length;
+  const box=$('#items');box.replaceChildren();
+  const list=cart.map(byId).filter(Boolean);
+  if(!list.length)box.append(el('div',{class:'empty'},el('div',{class:'display'},'Vacío'),'Agrega las cartas que te gusten y pídelas todas juntas.'));
+  list.forEach(c=>box.append(el('div',{class:'item'},
+    el('div',{class:'th'},el('img',{src:safeUrl(c.foto_frente_mini)||safeUrl(c.foto_frente),alt:''})),
+    el('div',{},el('div',{class:'t'},c.nombre),el('div',{class:'p'},soles(c.pv))),
+    el('button',{class:'rm',onclick:()=>toggle(c.id),'aria-label':'Quitar'},'✕'))));
+  $('#total').textContent=soles(list.reduce((s,c)=>s+Number(c.pv),0));
+  $('#wa').disabled=!list.length;
+}
+const setDrawer=o=>{$('#drawer').classList.toggle('open',o);$('#drawer').setAttribute('aria-hidden',String(!o));document.body.style.overflow=o?'hidden':''};
+$('#openCart').onclick=()=>{renderCart();setDrawer(true)};
+$('#closeCart').onclick=$('#scrim').onclick=()=>setDrawer(false);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')setDrawer(false)});
+$('#wa').onclick=()=>wa(cart);
+
+function wa(ids){
+  const list=ids.map(byId).filter(Boolean);if(!list.length)return;
+  const lines=list.map((c,i)=>`${i+1}. ${c.nombre} — ${soles(c.pv)}`);
+  const total=list.reduce((s,c)=>s+Number(c.pv),0);
+  const msg=`Hola Ruma Store 👑 Quiero estas cartas gradeadas:\n\n${lines.join('\n')}\n\nTotal: ${soles(total)}\n\n¿Siguen disponibles? Quedo atento(a) para coordinar pago y entrega.`;
+  window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`,'_blank','noopener');
+}
+
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1600)}
+$('#q').addEventListener('input',render);$('#sort').addEventListener('change',render);
+load();
+</script>
+</body>
+</html>

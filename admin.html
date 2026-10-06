@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Fotos · Ruma Cartas</title>
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{--brand:#4B2E83;--brand-m:#8E64E2;--sec:#FFB727;--bg:#FFF8D8;--ink:#131316;--card:#fff;--line:rgba(75,46,131,.16);--muted:#5b5470;--ok:#1fa35b;--red:#FF3B3B}
+@media (prefers-color-scheme:dark){:root{--bg:#17102b;--ink:#fff6dc;--card:#221845;--line:rgba(255,255,255,.14);--muted:#c3b8e6}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Quicksand,system-ui,sans-serif;font-weight:600;min-height:100vh}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.display{font-family:'Luckiest Guy';font-weight:400;letter-spacing:.02em}
+header{background:var(--brand);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+header h1{font-size:24px;color:var(--sec);text-shadow:2px 2px 0 #131316}
+header .sp{flex:1}
+.btn{background:var(--sec);color:#131316;border:2px solid #131316;border-radius:12px;padding:9px 16px;font-weight:700;box-shadow:3px 3px 0 #131316}
+.btn.ghost{background:transparent;color:inherit;border-color:currentColor;box-shadow:none}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.login{max-width:380px;margin:12vh auto;padding:24px;background:var(--card);border:3px solid #131316;border-radius:22px;box-shadow:8px 8px 0 #131316;display:flex;flex-direction:column;gap:12px}
+.login h2{font-size:30px;color:var(--brand)}
+@media (prefers-color-scheme:dark){.login h2{color:var(--sec)}}
+.login input{padding:12px;border-radius:12px;border:2px solid var(--line);background:transparent}
+.msg{font-size:14px;min-height:20px}
+.msg.err{color:var(--red)}.msg.ok{color:var(--ok)}
+main{max-width:1100px;margin:0 auto;padding:16px;display:grid;grid-template-columns:340px 1fr;gap:16px}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+.list{background:var(--card);border:2px solid var(--line);border-radius:18px;overflow:hidden;max-height:calc(100vh - 110px);display:flex;flex-direction:column}
+.filters{padding:10px;display:flex;gap:6px;flex-wrap:wrap;border-bottom:2px solid var(--line)}
+.filters button{padding:6px 12px;border-radius:999px;border:2px solid var(--brand);background:transparent;font-weight:700;font-size:13px}
+.filters button[aria-pressed=true]{background:var(--brand);color:#fff}
+.rows{overflow:auto}
+.r{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
+.r:hover,.r.sel{background:rgba(142,100,226,.16)}
+.r .n{grid-column:1;line-height:1.25}
+.r .s{grid-column:2;grid-row:1/3;align-self:center;display:flex;gap:4px}
+.dot{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:11px;border:2px solid var(--line);color:var(--muted)}
+.dot.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.r .m{color:var(--muted);font-size:12px}
+.pane{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pane h2{font-size:17px;line-height:1.3}
+.facts{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13px}
+.drops{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:520px){.drops{grid-template-columns:1fr}}
+.drop{border:3px dashed var(--brand-m);border-radius:18px;aspect-ratio:3/4;display:grid;place-items:center;text-align:center;padding:10px;position:relative;overflow:hidden;background:rgba(142,100,226,.07);cursor:pointer}
+.drop.over{background:rgba(255,183,39,.25)}
+.drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#2e1b57}
+.drop .lbl{position:absolute;left:8px;top:8px;background:var(--sec);color:#131316;border:2px solid #131316;border-radius:9px;padding:1px 9px;font-size:12px;font-weight:700;z-index:2}
+.drop .bar{position:absolute;left:0;bottom:0;height:6px;background:var(--ok);width:0;transition:width .2s;z-index:3}
+.drop input{display:none}
+.hint{font-size:13px;color:var(--muted);font-weight:500}
+.empty{color:var(--muted);padding:40px 10px;text-align:center}
+</style>
+</head>
+<body>
+<header><h1 class="display">RUMA · Fotos de cartas</h1><div class="sp"></div><span id="who" style="font-size:13px"></span><button class="btn ghost" id="out" hidden>Salir</button></header>
+
+<section id="loginBox" class="login" hidden>
+  <h2 class="display">Entrar</h2>
+  <p class="hint">Solo el correo de Ruma puede subir fotos.</p>
+  <input id="em" type="email" placeholder="correo" autocomplete="username">
+  <input id="pw" type="password" placeholder="contraseña (mín. 8)" autocomplete="current-password">
+  <button class="btn" id="go">Entrar</button>
+  <button class="btn ghost" id="reg" style="color:inherit">Primera vez: crear cuenta</button>
+  <div class="msg" id="lmsg"></div>
+</section>
+
+<main id="app" hidden>
+  <div class="list">
+    <div class="filters" id="filters"></div>
+    <div class="rows" id="rows"></div>
+  </div>
+  <div class="pane" id="pane"><div class="empty">Elige una carta de la lista.</div></div>
+</main>
+
+<script>
+'use strict';
+const SB_URL='https://jfekxykuasvmanmolbwg.supabase.co';
+const SB_KEY='sb_publishable_0tjN9mXrJJzLRGt_c51QxQ_mDV9FTph';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+const $=s=>document.querySelector(s);
+const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[kk,v]of Object.entries(a)){if(kk==='class')e.className=v;else if(kk.startsWith('on'))e.addEventListener(kk.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(kk,v)}k.flat().forEach(c=>e.append(c?.nodeType?c:document.createTextNode(c??'')));return e};
+let cartas=[],filtro='Todas',sel=null;
+
+async function boot(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){$('#loginBox').hidden=false;$('#app').hidden=true;$('#out').hidden=true;return}
+  $('#loginBox').hidden=true;$('#who').textContent=session.user.email;$('#out').hidden=false;
+  const{data,error}=await sb.rpc('admin_listar');
+  if(error){$('#app').hidden=true;$('#loginBox').hidden=false;msg('Esta cuenta no tiene permiso. Entra con el correo de Ruma.',1);await sb.auth.signOut();$('#out').hidden=true;return}
+  cartas=data;$('#app').hidden=false;renderList();if(sel)renderPane();
+}
+const msg=(t,err)=>{const m=$('#lmsg');m.textContent=t;m.className='msg '+(err?'err':'ok')};
+$('#go').onclick=async()=>{const{error}=await sb.auth.signInWithPassword({email:$('#em').value.trim(),password:$('#pw').value});if(error)msg(error.message.includes('confirm')?'Falta confirmar el correo (revisa tu bandeja).':'Correo o contraseña incorrectos.',1);else boot()};
+$('#reg').onclick=async()=>{if($('#pw').value.length<8)return msg('La contraseña debe tener al menos 8 caracteres.',1);const{error}=await sb.auth.signUp({email:$('#em').value.trim(),password:$('#pw').value});if(error)msg(error.message,1);else msg('Listo. Confirma el correo que te llegó y luego pulsa Entrar.')};
+$('#out').onclick=async()=>{await sb.auth.signOut();sel=null;boot()};
+
+function renderList(){
+  const fs=$('#filters');fs.replaceChildren();
+  ['Todas','PSA','CGC','Chinas','Sin foto'].forEach(f=>fs.append(el('button',{'aria-pressed':String(f===filtro),onclick:()=>{filtro=f;renderList()}},f)));
+  const rows=$('#rows');rows.replaceChildren();
+  cartas.filter(c=>filtro==='Todas'||(filtro==='Sin foto'?!c.foto_frente:c.empresa===filtro)).forEach(c=>{
+    rows.append(el('div',{class:'r'+(sel===c.id?' sel':''),onclick:()=>{sel=c.id;renderList();renderPane()}},
+      el('div',{class:'n'},c.nombre),
+      el('div',{class:'s'},el('span',{class:'dot'+(c.foto_frente?' on':''),title:'Frente'},'F'),el('span',{class:'dot'+(c.foto_dorso?' on':''),title:'Dorso'},'D')),
+      el('div',{class:'m'},`${c.empresa} ${c.grado||''} · PV ${c.pv?'S/ '+c.pv:'—'}${c.disponible?'':' · vendida'}`)));
+  });
+}
+
+function renderPane(){
+  const c=cartas.find(x=>x.id===sel);if(!c)return;
+  $('#pane').replaceChildren(
+    el('h2',{},c.nombre),
+    el('div',{class:'facts'},el('span',{class:'chip'},`${c.empresa} ${c.grado||''}`),el('span',{class:'chip'},'PV: '+(c.pv?'S/ '+c.pv:'sin precio'))),
+    el('div',{class:'facts'},c.precio_mercado?el('span',{class:'chip'},'Mercado ref.: S/ '+c.precio_mercado):null,el('span',{class:'chip'},c.disponible?'Disponible':'Vendida'),
+      el('span',{class:'chip'},(c.pv&&c.disponible&&c.foto_frente)?'✅ Visible en el catálogo':'⏳ Aún no visible (necesita PV, stock y foto de frente)')),
+    el('div',{class:'drops'},drop(c,'frente'),drop(c,'dorso')),
+    el('p',{class:'hint'},'Arrastra la foto o toca el recuadro. Se sube en alta calidad (hasta 2400 px) y se crea sola una versión liviana para la lista.'));
+}
+
+function drop(c,lado){
+  const url=c['foto_'+lado];
+  const box=el('div',{class:'drop',tabindex:'0'});
+  const bar=el('div',{class:'bar'});
+  const input=el('input',{type:'file',accept:'image/jpeg,image/png,image/webp,image/heic'});
+  box.append(el('span',{class:'lbl'},lado==='frente'?'FRENTE':'DORSO'));
+  if(url)box.append(el('img',{src:url+'',alt:lado}));else box.append(el('div',{},'Suelta aquí la foto del ',lado,el('br'),el('span',{class:'hint'},'o toca para elegir')));
+  box.append(bar,input);
+  box.onclick=()=>input.click();
+  box.ondragover=e=>{e.preventDefault();box.classList.add('over')};box.ondragleave=()=>box.classList.remove('over');
+  box.ondrop=e=>{e.preventDefault();box.classList.remove('over');if(e.dataTransfer.files[0])subir(c,lado,e.dataTransfer.files[0],bar)};
+  input.onchange=()=>input.files[0]&&subir(c,lado,input.files[0],bar);
+  return box;
+}
+
+async function redim(file,max,q){
+  const bmp=await createImageBitmap(file,{imageOrientation:'from-image'});
+  const k=Math.min(1,max/Math.max(bmp.width,bmp.height));
+  const cv=document.createElement('canvas');cv.width=Math.round(bmp.width*k);cv.height=Math.round(bmp.height*k);
+  cv.getContext('2d').drawImage(bmp,0,0,cv.width,cv.height);
+  return new Promise(r=>cv.toBlob(r,'image/jpeg',q));
+}
+
+async function subir(c,lado,file,bar){
+  try{
+    bar.style.width='10%';
+    const[full,mini]=await Promise.all([redim(file,2400,.9),redim(file,700,.82)]);
+    bar.style.width='35%';
+    const base=`${c.airtable_id}/${lado}-${Date.now()}`;
+    const up=async(path,blob)=>{const{error}=await sb.storage.from('cartas').upload(path,blob,{contentType:'image/jpeg',cacheControl:'31536000',upsert:false});if(error)throw error;return sb.storage.from('cartas').getPublicUrl(path).data.publicUrl};
+    const u1=await up(base+'.jpg',full);bar.style.width='70%';
+    const u2=await up(base+'_m.jpg',mini);bar.style.width='90%';
+    const{error}=await sb.rpc('admin_set_foto',{p_id:c.id,p_lado:lado,p_url:u1,p_mini:u2});if(error)throw error;
+    bar.style.width='100%';
+    await boot();
+  }catch(e){bar.style.width='0';alert('No se pudo subir: '+(e.message||e))}
+}
+sb.auth.onAuthStateChange(()=>{});
+boot();
+</script>
+</body>
+</html>
