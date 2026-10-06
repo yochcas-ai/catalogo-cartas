@@ -53,11 +53,25 @@ main{max-width:1100px;margin:0 auto;padding:16px;display:grid;grid-template-colu
 .drop .bar{position:absolute;left:0;bottom:0;height:6px;background:var(--ok);width:0;transition:width .2s;z-index:3}
 .drop input{display:none}
 .hint{font-size:13px;color:var(--muted);font-weight:500}
+.box{border:2px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.box h3{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.line{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.in{padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:transparent;min-width:0}
+.in.num{width:110px}
+.step{width:38px;height:38px;border-radius:10px;border:2px solid var(--brand);background:transparent;font-size:20px;font-weight:700}
+.big{font-size:22px;min-width:34px;text-align:center}
+.btn.ok{background:var(--ok);color:#fff}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th,.tbl td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr.anul{opacity:.45;text-decoration:line-through}
+.kpis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.kpi{border:2px solid var(--line);border-radius:14px;padding:10px 16px;background:var(--card)}
+.kpi b{display:block;font-size:22px;color:var(--brand)}
 .empty{color:var(--muted);padding:40px 10px;text-align:center}
 </style>
 </head>
 <body>
-<header><h1 class="display">RUMA · Fotos de cartas</h1><div class="sp"></div><span id="who" style="font-size:13px"></span><button class="btn ghost" id="out" hidden>Salir</button></header>
+<header><h1 class="display">RUMA · Fotos de cartas</h1><nav id="nav" hidden style="display:flex;gap:6px"><button class="btn ghost" id="vCartas" style="padding:6px 12px">Cartas</button><button class="btn ghost" id="vVentas" style="padding:6px 12px">Ventas</button></nav><div class="sp"></div><span id="who" style="font-size:13px"></span><button class="btn ghost" id="out" hidden>Salir</button></header>
 
 <section id="loginBox" class="login" hidden>
   <h2 class="display">Entrar</h2>
@@ -77,6 +91,8 @@ main{max-width:1100px;margin:0 auto;padding:16px;display:grid;grid-template-colu
   <div class="pane" id="pane"><div class="empty">Elige una carta de la lista.</div></div>
 </main>
 
+<section id="ventasView" hidden style="max-width:1100px;margin:0 auto;padding:16px"></section>
+
 <script>
 'use strict';
 const SB_URL='https://jfekxykuasvmanmolbwg.supabase.co';
@@ -88,8 +104,8 @@ let cartas=[],filtro='Todas',sel=null;
 
 async function boot(){
   const{data:{session}}=await sb.auth.getSession();
-  if(!session){$('#loginBox').hidden=false;$('#app').hidden=true;$('#out').hidden=true;return}
-  $('#loginBox').hidden=true;$('#who').textContent=session.user.email;$('#out').hidden=false;
+  if(!session){$('#loginBox').hidden=false;$('#app').hidden=true;$('#nav').hidden=true;$('#out').hidden=true;return}
+  $('#loginBox').hidden=true;$('#nav').hidden=false;$('#who').textContent=session.user.email;$('#out').hidden=false;
   const{data,error}=await sb.rpc('admin_listar');
   if(error){$('#app').hidden=true;$('#loginBox').hidden=false;msg('Esta cuenta no tiene permiso. Entra con el correo de Ruma.',1);await sb.auth.signOut();$('#out').hidden=true;return}
   cartas=data;$('#app').hidden=false;renderList();if(sel)renderPane();
@@ -107,19 +123,38 @@ function renderList(){
     rows.append(el('div',{class:'r'+(sel===c.id?' sel':''),onclick:()=>{sel=c.id;renderList();renderPane()}},
       el('div',{class:'n'},c.nombre),
       el('div',{class:'s'},el('span',{class:'dot'+(c.foto_frente?' on':''),title:'Frente'},'F'),el('span',{class:'dot'+(c.foto_dorso?' on':''),title:'Dorso'},'D')),
-      el('div',{class:'m'},`${c.empresa} ${c.grado||''} · PV ${c.pv?'S/ '+c.pv:'—'}${c.disponible?'':' · vendida'}`)));
+      el('div',{class:'m'},`${c.empresa} ${c.grado||''} · PV ${c.pv?'S/ '+c.pv:'—'}${c.stock>0?' · stock '+c.stock:' · agotada'}`)));
   });
 }
 
 function renderPane(){
   const c=cartas.find(x=>x.id===sel);if(!c)return;
+  const visible=c.pv&&c.stock>0&&c.foto_frente;
+  const pvIn=el('input',{class:'in num',type:'number',min:'0',step:'1',inputmode:'numeric',value:c.pv??'',placeholder:'S/'});
+  const stockN=el('span',{class:'big'},String(c.stock));
+  const rpc=async(fn,args,ok)=>{const{error}=await sb.rpc(fn,args);if(error)return alert('No se pudo: '+error.message);await boot();if(ok)ok()};
+  const venta=el('div',{class:'box',hidden:true});
+  const vp=el('input',{class:'in num',type:'number',min:'0',step:'1',value:c.pv??''});
+  const vc=el('select',{class:'in'},['WhatsApp','Instagram','TikTok','Tienda / en persona','Otro'].map(x=>el('option',{},x)));
+  const vcl=el('input',{class:'in',placeholder:'Cliente (opcional)',maxlength:'120'});
+  const vn=el('input',{class:'in',placeholder:'Nota (opcional)',maxlength:'300',style:'flex:1;min-width:160px'});
+  venta.append(el('h3',{},'Registrar venta'),
+    el('div',{class:'line'},el('span',{},'Precio final S/'),vp,vc),
+    el('div',{class:'line'},vcl,vn),
+    el('div',{class:'line'},el('button',{class:'btn ok',onclick:()=>{if(!(+vp.value>=0)||vp.value==='')return alert('Pon el precio final');rpc('admin_registrar_venta',{p_id:c.id,p_precio:+vp.value,p_canal:vc.value,p_cliente:vcl.value,p_nota:vn.value},()=>alert('Venta registrada. Stock descontado.'))}},'Confirmar venta'),
+      el('button',{class:'btn ghost',style:'color:inherit',onclick:()=>venta.hidden=true},'Cancelar')));
   $('#pane').replaceChildren(
     el('h2',{},c.nombre),
-    el('div',{class:'facts'},el('span',{class:'chip'},`${c.empresa} ${c.grado||''}`),el('span',{class:'chip'},'PV: '+(c.pv?'S/ '+c.pv:'sin precio'))),
-    el('div',{class:'facts'},c.precio_mercado?el('span',{class:'chip'},'Mercado ref.: S/ '+c.precio_mercado):null,el('span',{class:'chip'},c.disponible?'Disponible':'Vendida'),
-      el('span',{class:'chip'},(c.pv&&c.disponible&&c.foto_frente)?'✅ Visible en el catálogo':'⏳ Aún no visible (necesita PV, stock y foto de frente)')),
+    el('div',{class:'facts'},el('span',{class:'chip'},`${c.empresa} ${c.grado||''}`),
+      c.precio_mercado?el('span',{class:'chip'},'Mercado ref.: S/ '+c.precio_mercado):null,
+      el('span',{class:'chip'},visible?'✅ Visible en el catálogo':'⏳ No visible: falta '+[!c.pv&&'PV',!(c.stock>0)&&'stock',!c.foto_frente&&'foto de frente'].filter(Boolean).join(', '))),
+    el('div',{class:'box'},el('h3',{},'Precio y stock'),
+      el('div',{class:'line'},el('span',{},'PV S/'),pvIn,el('button',{class:'btn',onclick:()=>rpc('admin_set_precio',{p_id:c.id,p_pv:pvIn.value===''?null:+pvIn.value})},'Guardar precio')),
+      el('div',{class:'line'},el('span',{},'Stock'),el('button',{class:'step',onclick:()=>rpc('admin_set_stock',{p_id:c.id,p_stock:Math.max(0,c.stock-1)})},'−'),stockN,el('button',{class:'step',onclick:()=>rpc('admin_set_stock',{p_id:c.id,p_stock:c.stock+1})},'+'),
+        el('button',{class:'btn',style:'margin-left:auto',disabled:c.stock<1,onclick:()=>{venta.hidden=false}},'Registrar venta'))),
+    venta,
     el('div',{class:'drops'},drop(c,'frente'),drop(c,'dorso')),
-    el('p',{class:'hint'},'Arrastra la foto o toca el recuadro. Se sube en alta calidad (hasta 2400 px) y se crea sola una versión liviana para la lista.'));
+    el('p',{class:'hint'},'Foto de frente obligatoria; dorso opcional. Se sube en alta calidad (hasta 2400 px) y se crea sola una versión liviana.'));
 }
 
 function drop(c,lado){
@@ -158,6 +193,25 @@ async function subir(c,lado,file,bar){
     bar.style.width='100%';
     await boot();
   }catch(e){bar.style.width='0';alert('No se pudo subir: '+(e.message||e))}
+}
+
+const money=n=>'S/ '+Number(n).toLocaleString('es-PE',{maximumFractionDigits:2});
+function show(v){$('#app').hidden=v!=='cartas';$('#ventasView').hidden=v!=='ventas';if(v==='ventas')cargarVentas()}
+$('#vCartas').onclick=()=>show('cartas');$('#vVentas').onclick=()=>show('ventas');
+async function cargarVentas(){
+  const box=$('#ventasView');const{data,error}=await sb.rpc('admin_ventas');
+  if(error){box.replaceChildren(el('p',{class:'empty'},'No se pudo cargar: '+error.message));return}
+  const ok=data.filter(v=>!v.anulada);const hoyS=new Date().toLocaleDateString('en-CA',{timeZone:'America/Lima'});
+  const sum=a=>a.reduce((t,v)=>t+Number(v.precio_venta),0);
+  const mes=ok.filter(v=>v.fecha.slice(0,7)===hoyS.slice(0,7));
+  const csv=()=>{const h=['fecha','carta','empresa','grado','precio_venta','canal','cliente','nota','anulada'];const q=x=>'"'+String(x??'').replace(/"/g,'""')+'"';
+    const t=[h.join(','),...data.map(v=>[v.fecha,v.nombre,v.empresa,v.grado,v.precio_venta,v.canal,v.cliente,v.nota,v.anulada].map(q).join(','))].join('\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+t],{type:'text/csv'}));a.download='ventas-cartas.csv';a.click()};
+  box.replaceChildren(
+    el('div',{class:'kpis'},el('div',{class:'kpi'},'Ventas del mes',el('b',{},money(sum(mes))+' · '+mes.length)),el('div',{class:'kpi'},'Ventas totales',el('b',{},money(sum(ok))+' · '+ok.length)),el('button',{class:'btn',style:'align-self:center',onclick:csv},'Descargar CSV')),
+    data.length?el('table',{class:'tbl'},el('tr',{},['Fecha','Carta','Precio','Canal','Cliente / nota',''].map(h=>el('th',{},h))),
+      data.map(v=>el('tr',{class:v.anulada?'anul':''},el('td',{},v.fecha),el('td',{},`${v.nombre} (${v.empresa} ${v.grado||''})`),el('td',{},money(v.precio_venta)),el('td',{},v.canal||''),el('td',{},[v.cliente,v.nota].filter(Boolean).join(' · ')),
+        el('td',{},v.anulada?'Anulada':el('button',{class:'btn ghost',style:'color:inherit;padding:4px 10px;box-shadow:none',onclick:async()=>{if(!confirm('¿Anular esta venta? La carta vuelve al stock.'))return;const{error}=await sb.rpc('admin_anular_venta',{p_venta:v.id});if(error)return alert(error.message);await boot();cargarVentas()}},'Anular'))))):el('p',{class:'empty'},'Aún no hay ventas registradas.'));
 }
 sb.auth.onAuthStateChange(()=>{});
 boot();
