@@ -52,6 +52,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;display:grid;grid-template-colu
 .drop .lbl{position:absolute;left:8px;top:8px;background:var(--sec);color:#131316;border:2px solid #131316;border-radius:9px;padding:1px 9px;font-size:12px;font-weight:700;z-index:2}
 .drop .bar{position:absolute;left:0;bottom:0;height:6px;background:var(--ok);width:0;transition:width .2s;z-index:3}
 .drop input{display:none}
+.xdel{position:absolute;right:8px;top:8px;z-index:4;width:34px;height:34px;border-radius:50%;border:2px solid #131316;background:#fff;color:#c0262d;font-size:18px;font-weight:700;cursor:pointer;line-height:1}
 .hint{font-size:13px;color:var(--muted);font-weight:500}
 .box{border:2px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}
 .box h3{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
@@ -85,6 +86,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;display:grid;grid-template-colu
 
 <main id="app" hidden>
   <div class="list">
+    <button class="btn ok" id="nueva" style="width:100%;margin-bottom:8px">+ Nueva carta</button>
     <div class="filters" id="filters"></div>
     <div class="rows" id="rows"></div>
   </div>
@@ -131,6 +133,7 @@ function renderPane(){
   const c=cartas.find(x=>x.id===sel);if(!c)return;
   const visible=c.pv&&c.stock>0&&c.foto_frente;
   const pvIn=el('input',{class:'in num',type:'number',min:'0',step:'1',inputmode:'numeric',value:c.pv??'',placeholder:'S/'});
+  const nomIn=el('input',{class:'in',value:c.nombre,maxlength:'200',style:'flex:1;min-width:200px'});
   const stockN=el('span',{class:'big'},String(c.stock));
   const rpc=async(fn,args,ok)=>{const{error}=await sb.rpc(fn,args);if(error)return alert('No se pudo: '+error.message);await boot();if(ok)ok()};
   const venta=el('div',{class:'box',hidden:true});
@@ -145,6 +148,8 @@ function renderPane(){
       el('button',{class:'btn ghost',style:'color:inherit',onclick:()=>venta.hidden=true},'Cancelar')));
   $('#pane').replaceChildren(
     el('h2',{},c.nombre),
+    el('div',{class:'box'},el('h3',{},'Nombre'),
+      el('div',{class:'line'},nomIn,el('button',{class:'btn',onclick:()=>{if(nomIn.value.trim().length<3)return alert('Nombre muy corto');rpc('admin_set_nombre',{p_id:c.id,p_nombre:nomIn.value})}},'Guardar nombre'))),
     el('div',{class:'facts'},el('span',{class:'chip'},`${c.empresa} ${c.grado||''}`),
       c.precio_mercado?el('span',{class:'chip'},'Mercado ref.: S/ '+c.precio_mercado):null,
       el('span',{class:'chip'},visible?'✅ Visible en el catálogo':'⏳ No visible: falta '+[!c.pv&&'PV',!(c.stock>0)&&'stock',!c.foto_frente&&'foto de frente'].filter(Boolean).join(', '))),
@@ -157,13 +162,34 @@ function renderPane(){
     el('p',{class:'hint'},'Foto de frente obligatoria; dorso opcional. Se sube en alta calidad (hasta 2400 px) y se crea sola una versión liviana.'));
 }
 
+$('#nueva').onclick=()=>{
+  sel=null;renderList();
+  const n=el('input',{class:'in',placeholder:'Nombre completo (ej. 2023 POKEMON ... CHARIZARD PSA 10)',maxlength:'200',style:'flex:1;min-width:220px'});
+  const e=el('select',{class:'in'},['PSA','CGC','Chinas'].map(x=>el('option',{},x)));
+  const g=el('input',{class:'in',placeholder:'Grado (ej. 10)',maxlength:'20',style:'width:110px'});
+  const p=el('input',{class:'in num',type:'number',min:'0',step:'1',inputmode:'numeric',placeholder:'PV S/'});
+  const s=el('input',{class:'in num',type:'number',min:'0',step:'1',inputmode:'numeric',value:'1'});
+  $('#pane').replaceChildren(el('h2',{},'Nueva carta'),
+    el('div',{class:'box'},
+      el('div',{class:'line'},n),
+      el('div',{class:'line'},el('span',{},'Empresa'),e,g),
+      el('div',{class:'line'},el('span',{},'PV S/'),p,el('span',{},'Stock'),s),
+      el('div',{class:'line'},el('button',{class:'btn ok',onclick:async()=>{
+        if(n.value.trim().length<3)return alert('Falta el nombre');
+        const{data,error}=await sb.rpc('admin_crear_carta',{p_nombre:n.value,p_empresa:e.value,p_grado:g.value,p_pv:p.value===''?null:+p.value,p_stock:s.value===''?1:+s.value});
+        if(error)return alert('No se pudo: '+error.message);
+        sel=data;await boot();
+      }},'Crear carta'))),
+    el('p',{class:'hint'},'Al crearla se abre su ficha para subir la foto de frente. Se verá en el catálogo con PV, stock y foto.'));
+};
+
 function drop(c,lado){
   const url=c['foto_'+lado];
   const box=el('div',{class:'drop',tabindex:'0'});
   const bar=el('div',{class:'bar'});
   const input=el('input',{type:'file',accept:'image/jpeg,image/png,image/webp,image/heic'});
   box.append(el('span',{class:'lbl'},lado==='frente'?'FRENTE':'DORSO'));
-  if(url)box.append(el('img',{src:url+'',alt:lado}));else box.append(el('div',{},'Suelta aquí la foto del ',lado,el('br'),el('span',{class:'hint'},'o toca para elegir')));
+  if(url){box.append(el('img',{src:url+'',alt:lado}),el('button',{class:'xdel',title:'Quitar foto','aria-label':'Quitar foto '+lado,onclick:async e=>{e.stopPropagation();if(!confirm('¿Quitar la foto de '+lado+'?'))return;const{error}=await sb.rpc('admin_set_foto',{p_id:c.id,p_lado:lado,p_url:null,p_mini:null});if(error)return alert('No se pudo: '+error.message);boot()}},'✕'))}else box.append(el('div',{},'Suelta aquí la foto del ',lado,el('br'),el('span',{class:'hint'},'o toca para elegir')));
   box.append(bar,input);
   box.onclick=()=>input.click();
   box.ondragover=e=>{e.preventDefault();box.classList.add('over')};box.ondragleave=()=>box.classList.remove('over');
@@ -185,7 +211,7 @@ async function subir(c,lado,file,bar){
     bar.style.width='10%';
     const[full,mini]=await Promise.all([redim(file,2400,.9),redim(file,700,.82)]);
     bar.style.width='35%';
-    const base=`${c.airtable_id}/${lado}-${Date.now()}`;
+    const base=`${c.airtable_id||c.id}/${lado}-${Date.now()}`;
     const up=async(path,blob)=>{const{error}=await sb.storage.from('cartas').upload(path,blob,{contentType:'image/jpeg',cacheControl:'31536000',upsert:false});if(error)throw error;return sb.storage.from('cartas').getPublicUrl(path).data.publicUrl};
     const u1=await up(base+'.jpg',full);bar.style.width='70%';
     const u2=await up(base+'_m.jpg',mini);bar.style.width='90%';
