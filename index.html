@@ -29,7 +29,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 /* header */
 header{position:sticky;top:0;z-index:30;background:var(--brand);color:#fff;box-shadow:0 6px 20px -10px rgba(0,0,0,.5)}
 .bar{display:flex;align-items:center;gap:12px;height:62px}
-.logo img{height:44px;width:auto;display:block;filter:drop-shadow(0 2px 0 rgba(0,0,0,.35))}
+.logo img{height:52px;width:auto;display:block;filter:drop-shadow(0 2px 0 rgba(0,0,0,.35))}
 .logo{font-size:28px;color:var(--sec);text-shadow:2px 2px 0 #131316;text-decoration:none;display:flex;align-items:center;gap:8px;white-space:nowrap}
 .logo small{font-family:Quicksand;font-weight:700;font-size:12px;color:#fff;text-shadow:none;opacity:.85;letter-spacing:.08em;text-transform:uppercase}
 .spacer{flex:1}
@@ -156,7 +156,7 @@ a{color:inherit}
 <main class="wrap">
   <section class="hero">
     <h1 class="display">Cartas con<br>certificado</h1>
-    <p>Cada slab es única: pieza gradeada por PSA, CGC o casas chinas, fotografiada en alta calidad. Elige una o arma tu carrito y la coordinamos por WhatsApp.</p>
+    <p>Cada slab es única: pieza gradeada por PSA, CGC o Grading China, fotografiada en alta calidad. Elige una o arma tu carrito y la coordinamos por WhatsApp.</p>
   </section>
 
   <div class="controls">
@@ -215,7 +215,7 @@ const WA='51926999771';
   if(a)a.href='https://wa.me/'+WA+'?text='+encodeURIComponent('Hola Ruma Store 👑 Vi su catálogo de cartas gradeadas y quiero consultar por una carta.');
 })();
 const ORDEN=['PSA','CGC','Chinas'];
-const ETIQ={Todas:'Todas',PSA:'PSA',CGC:'CGC',Chinas:'Chinas'};
+const ETIQ={Todas:'Todas',PSA:'PSA',CGC:'CGC',Chinas:'Grading China'};
 
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[kk,v]of Object.entries(a)){if(kk==='class')e.className=v;else if(kk.startsWith('on'))e.addEventListener(kk.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(kk,v)}k.flat().forEach(c=>e.append(c?.nodeType?c:document.createTextNode(c??'')));return e};
@@ -272,7 +272,7 @@ function cardEl(c,i){
   const img=el('img',{src:safeUrl(c.foto_frente_mini)||safeUrl(c.foto_frente),alt:`${c.nombre} — frente`,loading:'lazy',decoding:'async'});
   return el('article',{class:'card'+(inC?' in':''),'data-id':c.id,style:`animation-delay:${Math.min(i,12)*40}ms`},
     el('div',{class:'shot',onclick:open,role:'button',tabindex:'0',onkeydown:e=>{if(e.key==='Enter')open()}},img,
-      el('span',{class:'badge'},`${c.empresa} ${c.grado||''}`.trim()),el('span',{class:'incart'},'En carrito ✓')),
+      el('span',{class:'badge'},`${ETIQ[c.empresa]||c.empresa} ${c.grado||''}`.trim()),el('span',{class:'incart'},'En carrito ✓')),
     el('div',{class:'info'},
       el('div',{class:'name',onclick:open},c.nombre),
       el('div',{class:'price'},el('small',{},'S/'),String(Number(c.pv).toLocaleString('es-PE'))),
@@ -302,7 +302,7 @@ function openDetail(id,keep){
   $('#modal').replaceChildren(
     el('div',{class:'stage'},el('button',{class:'close',onclick:()=>$('#dlg').close(),'aria-label':'Cerrar'},'✕'),img,sides),
     el('div',{class:'detail'},
-      el('div',{class:'meta'},el('span',{class:'chip'},c.empresa),c.grado?el('span',{class:'chip'},'Grado '+c.grado):null,el('span',{class:'chip'},'Pieza única')),
+      el('div',{class:'meta'},el('span',{class:'chip'},ETIQ[c.empresa]||c.empresa),c.grado?el('span',{class:'chip'},'Grado '+c.grado):null,el('span',{class:'chip'},'Pieza única')),
       el('h2',{},c.nombre),
       el('div',{class:'price'},el('small',{},'S/'),String(Number(c.pv).toLocaleString('es-PE'))),
       el('p',{class:'note'},'Toca la imagen para acercar y revisar la slab. Las fotos son de la carta exacta que recibirás.'),
