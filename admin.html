@@ -104,7 +104,7 @@ const SB_KEY='sb_publishable_0tjN9mXrJJzLRGt_c51QxQ_mDV9FTph';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[kk,v]of Object.entries(a)){if(kk==='class')e.className=v;else if(kk.startsWith('on'))e.addEventListener(kk.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(kk,v)}k.flat().forEach(c=>e.append(c?.nodeType?c:document.createTextNode(c??'')));return e};
-let cartas=[],filtro='Todas',sel=null;
+let cartas=[],filtro='Todas',sel=null,orden='za';
 
 async function boot(){
   const{data:{session}}=await sb.auth.getSession();
@@ -122,8 +122,17 @@ $('#out').onclick=async()=>{await sb.auth.signOut();sel=null;boot()};
 function renderList(){
   const fs=$('#filters');fs.replaceChildren();
   ['Todas','PSA','CGC','Chinas','Sin foto'].forEach(f=>fs.append(el('button',{'aria-pressed':String(f===filtro),onclick:()=>{filtro=f;renderList()}},f)));
+  const ord=el('select',{class:'in','aria-label':'Ordenar',style:'width:100%;margin-top:4px',onchange:e=>{orden=e.target.value;renderList()}},
+    [['za','Orden: Z → A (agotadas al final)'],['az','Orden: A → Z (agotadas al final)'],['pv','Orden: mayor precio (agotadas al final)']].map(([v,t])=>el('option',{value:v,selected:v===orden},t)));
+  fs.append(ord);
   const rows=$('#rows');rows.replaceChildren();
-  cartas.filter(c=>filtro==='Todas'||(filtro==='Sin foto'?!c.foto_frente:c.empresa===filtro)).forEach(c=>{
+  const cmp=(a,b)=>{
+    const ag=(a.stock>0?0:1)-(b.stock>0?0:1); if(ag)return ag;
+    if(orden==='pv')return (b.pv||0)-(a.pv||0)||a.nombre.localeCompare(b.nombre,'es',{sensitivity:'base'});
+    const r=a.nombre.localeCompare(b.nombre,'es',{sensitivity:'base',numeric:true});
+    return orden==='za'?-r:r;
+  };
+  cartas.filter(c=>filtro==='Todas'||(filtro==='Sin foto'?!c.foto_frente:c.empresa===filtro)).sort(cmp).forEach(c=>{
     rows.append(el('div',{class:'r'+(sel===c.id?' sel':''),onclick:()=>{sel=c.id;renderList();renderPane();if(innerWidth<=820)$('#pane').scrollIntoView({behavior:'smooth',block:'start'})}},
       el('div',{class:'n'},c.nombre),
       el('div',{class:'s'},el('span',{class:'dot'+(c.foto_frente?' on':''),title:'Frente'},'F'),el('span',{class:'dot'+(c.foto_dorso?' on':''),title:'Dorso'},'D')),
