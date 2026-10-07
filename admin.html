@@ -15,7 +15,7 @@ body{background:var(--bg);color:var(--ink);font-family:Quicksand,system-ui,sans-
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
 .display{font-family:'Luckiest Guy';font-weight:400;letter-spacing:.02em}
-header{background:var(--brand);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+header{background:var(--brand);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
 header h1{font-size:24px;color:var(--sec);text-shadow:2px 2px 0 #131316}
 header .sp{flex:1}
 .btn{background:var(--sec);color:#131316;border:2px solid #131316;border-radius:12px;padding:9px 16px;font-weight:700;box-shadow:3px 3px 0 #131316}
@@ -26,8 +26,10 @@ header .sp{flex:1}
 .login input{padding:12px;border-radius:12px;border:2px solid var(--line);background:transparent}
 .msg{font-size:14px;min-height:20px}
 .msg.err{color:var(--red)}.msg.ok{color:var(--ok)}
-main{max-width:1100px;margin:0 auto;padding:16px;display:grid;grid-template-columns:340px 1fr;gap:16px}
-@media(max-width:820px){main{grid-template-columns:1fr}}
+main{max-width:1100px;margin:0 auto;padding:16px;display:grid;grid-template-columns:340px minmax(0,1fr);gap:16px}
+@media(max-width:820px){main{grid-template-columns:minmax(0,1fr)}.list{max-height:none}.rows{max-height:42vh}header h1{font-size:19px}#who{display:none}header .sp{display:none}}
+.drop,.pane,.list{min-width:0}
+.back{display:none}@media(max-width:820px){.back{display:inline-flex;align-self:flex-start}}
 .list{background:var(--card);border:2px solid var(--line);border-radius:18px;overflow:hidden;max-height:calc(100vh - 110px);display:flex;flex-direction:column}
 .filters{padding:10px;display:flex;gap:6px;flex-wrap:wrap;border-bottom:2px solid var(--line)}
 .filters button{padding:6px 12px;border-radius:999px;border:2px solid var(--brand);background:transparent;font-weight:700;font-size:13px}
@@ -122,7 +124,7 @@ function renderList(){
   ['Todas','PSA','CGC','Chinas','Sin foto'].forEach(f=>fs.append(el('button',{'aria-pressed':String(f===filtro),onclick:()=>{filtro=f;renderList()}},f)));
   const rows=$('#rows');rows.replaceChildren();
   cartas.filter(c=>filtro==='Todas'||(filtro==='Sin foto'?!c.foto_frente:c.empresa===filtro)).forEach(c=>{
-    rows.append(el('div',{class:'r'+(sel===c.id?' sel':''),onclick:()=>{sel=c.id;renderList();renderPane()}},
+    rows.append(el('div',{class:'r'+(sel===c.id?' sel':''),onclick:()=>{sel=c.id;renderList();renderPane();if(innerWidth<=820)$('#pane').scrollIntoView({behavior:'smooth',block:'start'})}},
       el('div',{class:'n'},c.nombre),
       el('div',{class:'s'},el('span',{class:'dot'+(c.foto_frente?' on':''),title:'Frente'},'F'),el('span',{class:'dot'+(c.foto_dorso?' on':''),title:'Dorso'},'D')),
       el('div',{class:'m'},`${c.empresa} ${c.grado||''} · PV ${c.pv?'S/ '+c.pv:'—'}${c.stock>0?' · stock '+c.stock:' · agotada'}`)));
@@ -147,6 +149,7 @@ function renderPane(){
     el('div',{class:'line'},el('button',{class:'btn ok',onclick:()=>{if(!(+vp.value>=0)||vp.value==='')return alert('Pon el precio final');rpc('admin_registrar_venta',{p_id:c.id,p_precio:+vp.value,p_canal:vc.value,p_cliente:vcl.value,p_nota:vn.value},()=>alert('Venta registrada. Stock descontado.'))}},'Confirmar venta'),
       el('button',{class:'btn ghost',style:'color:inherit',onclick:()=>venta.hidden=true},'Cancelar')));
   $('#pane').replaceChildren(
+    el('button',{class:'btn ghost back',style:'color:inherit;padding:6px 12px',onclick:()=>$('.list').scrollIntoView({behavior:'smooth'})},'← Lista'),
     el('h2',{},c.nombre),
     el('div',{class:'box'},el('h3',{},'Nombre'),
       el('div',{class:'line'},nomIn,el('button',{class:'btn',onclick:()=>{if(nomIn.value.trim().length<3)return alert('Nombre muy corto');rpc('admin_set_nombre',{p_id:c.id,p_nombre:nomIn.value})}},'Guardar nombre'))),
