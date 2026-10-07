@@ -21,7 +21,8 @@
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:Quicksand,system-ui,sans-serif;font-weight:500;line-height:1.45;min-height:100vh;
-  background-image:radial-gradient(circle at 8% 0%,rgba(162,126,239,.22),transparent 40%),radial-gradient(circle at 100% 12%,rgba(255,183,39,.28),transparent 42%);background-attachment:fixed}
+  background-image:radial-gradient(circle at 8% 0%,rgba(162,126,239,.20),transparent 45%),radial-gradient(circle at 100% 100%,rgba(162,126,239,.14),transparent 45%);background-attachment:fixed}
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.26;background:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22420%22 height=%22420%22 viewBox=%220 0 420 420%22%3E%3Cg transform=%22translate%2860 70%29 rotate%28-12%29%22%3E%3Ccircle r=%2234%22 fill=%22%23FCD611%22 stroke=%22%23E5A100%22 stroke-width=%223%22/%3E%3Ccircle r=%2225.2%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%222.5%22/%3E%3Cpath d=%22M-7.5 -11.6h10.2a6.8 6.8 0 0 1 0 13.6h-10.2m7.5 0l7.5 11.6%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M-20.4 -10.2a23.8 23.8 0 0 1 17.0 -13.6%22 fill=%22none%22 stroke=%22%23fff%22 stroke-opacity=%22.7%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3C/g%3E%3Cg transform=%22translate%28250 40%29 rotate%2810%29%22%3E%3Ccircle r=%2222%22 fill=%22%23FCD611%22 stroke=%22%23E5A100%22 stroke-width=%223%22/%3E%3Ccircle r=%2216.3%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%222.5%22/%3E%3Cpath d=%22M-4.8 -7.5h6.6a4.4 4.4 0 0 1 0 8.8h-6.6m4.8 0l4.8 7.5%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M-13.2 -6.6a15.4 15.4 0 0 1 11.0 -8.8%22 fill=%22none%22 stroke=%22%23fff%22 stroke-opacity=%22.7%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3C/g%3E%3Cg transform=%22translate%28370 150%29 rotate%2818%29%22%3E%3Ccircle r=%2230%22 fill=%22%23FCD611%22 stroke=%22%23E5A100%22 stroke-width=%223%22/%3E%3Ccircle r=%2222.2%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%222.5%22/%3E%3Cpath d=%22M-6.6 -10.2h9.0a6.0 6.0 0 0 1 0 12.0h-9.0m6.6 0l6.6 10.2%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M-18.0 -9.0a21.0 21.0 0 0 1 15.0 -12.0%22 fill=%22none%22 stroke=%22%23fff%22 stroke-opacity=%22.7%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3C/g%3E%3Cg transform=%22translate%28150 200%29 rotate%28-20%29%22%3E%3Ccircle r=%2220%22 fill=%22%23FCD611%22 stroke=%22%23E5A100%22 stroke-width=%223%22/%3E%3Ccircle r=%2214.8%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%222.5%22/%3E%3Cpath d=%22M-4.4 -6.8h6.0a4.0 4.0 0 0 1 0 8.0h-6.0m4.4 0l4.4 6.8%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M-12.0 -6.0a14.0 14.0 0 0 1 10.0 -8.0%22 fill=%22none%22 stroke=%22%23fff%22 stroke-opacity=%22.7%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3C/g%3E%3Cg transform=%22translate%28300 290%29 rotate%288%29%22%3E%3Ccircle r=%2236%22 fill=%22%23FCD611%22 stroke=%22%23E5A100%22 stroke-width=%223%22/%3E%3Ccircle r=%2226.6%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%222.5%22/%3E%3Cpath d=%22M-7.9 -12.2h10.8a7.2 7.2 0 0 1 0 14.4h-10.8m7.9 0l7.9 12.2%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M-21.6 -10.8a25.2 25.2 0 0 1 18.0 -14.4%22 fill=%22none%22 stroke=%22%23fff%22 stroke-opacity=%22.7%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3C/g%3E%3Cg transform=%22translate%2870 340%29 rotate%2825%29%22%3E%3Ccircle r=%2226%22 fill=%22%23FCD611%22 stroke=%22%23E5A100%22 stroke-width=%223%22/%3E%3Ccircle r=%2219.2%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%222.5%22/%3E%3Cpath d=%22M-5.7 -8.8h7.8a5.2 5.2 0 0 1 0 10.4h-7.8m5.7 0l5.7 8.8%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M-15.6 -7.8a18.2 18.2 0 0 1 13.0 -10.4%22 fill=%22none%22 stroke=%22%23fff%22 stroke-opacity=%22.7%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3C/g%3E%3Cg transform=%22translate%28200 385%29 rotate%280%29%22%3E%3Ccircle r=%2218%22 fill=%22%23FCD611%22 stroke=%22%23E5A100%22 stroke-width=%223%22/%3E%3Ccircle r=%2213.3%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%222.5%22/%3E%3Cpath d=%22M-4.0 -6.1h5.4a3.6 3.6 0 0 1 0 7.2h-5.4m4.0 0l4.0 6.1%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M-10.8 -5.4a12.6 12.6 0 0 1 9.0 -7.2%22 fill=%22none%22 stroke=%22%23fff%22 stroke-opacity=%22.7%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3C/g%3E%3Cg transform=%22translate%28395 395%29 rotate%28-15%29%22%3E%3Ccircle r=%2222%22 fill=%22%23FCD611%22 stroke=%22%23E5A100%22 stroke-width=%223%22/%3E%3Ccircle r=%2216.3%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%222.5%22/%3E%3Cpath d=%22M-4.8 -7.5h6.6a4.4 4.4 0 0 1 0 8.8h-6.6m4.8 0l4.8 7.5%22 fill=%22none%22 stroke=%22%23E5A100%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M-13.2 -6.6a15.4 15.4 0 0 1 11.0 -8.8%22 fill=%22none%22 stroke=%22%23fff%22 stroke-opacity=%22.7%22 stroke-width=%223%22 stroke-linecap=%22round%22/%3E%3C/g%3E%3C/svg%3E") 0 0/420px 420px repeat}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .wrap{max-width:1180px;margin:0 auto;padding:0 16px}
 .display{font-family:'Luckiest Guy',cursive;font-weight:400;letter-spacing:.02em}
@@ -42,7 +43,7 @@ header{position:sticky;top:0;z-index:30;background:var(--brand);color:#fff;box-s
 .hero p{margin-top:12px;max-width:560px;color:var(--muted);font-size:17px}
 
 /* controls */
-.controls{position:sticky;top:62px;z-index:20;padding:12px 0;background:linear-gradient(rgba(255,248,216,.96) 78%,rgba(255,248,216,0))}
+.controls{position:sticky;top:62px;z-index:20;padding:10px 12px;margin:0 -12px;background:rgba(255,255,255,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:0 0 18px 18px;box-shadow:0 8px 18px -14px rgba(75,46,131,.5)}
 .tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 6px}
 .tab{flex:0 0 auto;padding:10px 18px;border-radius:999px;border:2px solid var(--brand);font-weight:700;background:var(--card);color:var(--brand);display:flex;gap:8px;align-items:center;transition:.15s}
 .tab .c{font-size:12px;background:var(--brand);color:#fff;border-radius:999px;padding:1px 8px}
@@ -186,7 +187,7 @@ const SB_URL='https://jfekxykuasvmanmolbwg.supabase.co';
 const SB_KEY='sb_publishable_0tjN9mXrJJzLRGt_c51QxQ_mDV9FTph';
 const WA='51926999771';
 const ORDEN=['PSA','CGC','Chinas'];
-const ETIQ={PSA:'PSA',CGC:'CGC',Chinas:'Chinas'};
+const ETIQ={Todas:'Todas',PSA:'PSA',CGC:'CGC',Chinas:'Chinas'};
 
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[kk,v]of Object.entries(a)){if(kk==='class')e.className=v;else if(kk.startsWith('on'))e.addEventListener(kk.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(kk,v)}k.flat().forEach(c=>e.append(c?.nodeType?c:document.createTextNode(c??'')));return e};
@@ -209,14 +210,14 @@ async function load(){
     g.replaceChildren(el('div',{class:'empty'},el('div',{class:'display'},'Ups'),'No pudimos cargar el catálogo. Intenta de nuevo en un momento.'));return;
   }
   cart=cart.filter(id=>byId(id)); saveCart();
-  tab=ORDEN.find(e=>cartas.some(c=>c.empresa===e))||ORDEN[0];
+  tab='Todas';
   renderTabs();render();renderCart();
 }
 
 function renderTabs(){
   const t=$('#tabs');t.replaceChildren();
-  ORDEN.forEach(e=>{
-    const n=cartas.filter(c=>c.empresa===e).length;
+  ['Todas',...ORDEN].forEach(e=>{
+    const n=e==='Todas'?cartas.length:cartas.filter(c=>c.empresa===e).length;
     t.append(el('button',{class:'tab',role:'tab','aria-selected':String(e===tab),onclick:()=>{tab=e;renderTabs();render()}},ETIQ[e],el('span',{class:'c'},String(n))));
   });
 }
@@ -229,7 +230,7 @@ function sorted(list){
 
 function render(){
   const q=$('#q').value.trim().toLowerCase();
-  const list=sorted(cartas.filter(c=>c.empresa===tab&&(!q||c.nombre.toLowerCase().includes(q))));
+  const list=sorted(cartas.filter(c=>(tab==='Todas'||c.empresa===tab)&&(!q||c.nombre.toLowerCase().includes(q))));
   const g=$('#grid');g.replaceChildren();
   if(!list.length){
     g.append(el('div',{class:'empty'},el('div',{class:'display'},cartas.length?'Nada por aquí':'Muy pronto'),cartas.length?'Prueba con otra búsqueda o revisa otra casa gradeadora.':'Estamos fotografiando las cartas. Vuelve en unos días.'));return;
