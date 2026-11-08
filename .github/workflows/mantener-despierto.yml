@@ -1,0 +1,25 @@
+# Latido: el plan gratis de Supabase pausa el proyecto tras ~7 dias sin actividad.
+# Esta accion hace una lectura minima de la base cada 3 dias (cuenta como actividad)
+# y falla si no responde, asi GitHub avisa por correo. La clave es la publicable
+# (la misma que ya va en el index.html); no hay secretos aqui.
+name: Mantener despierto (Cartas)
+
+on:
+  schedule:
+    - cron: "0 13 */3 * *"   # cada 3 dias, 08:00 en Lima
+  workflow_dispatch:
+
+jobs:
+  latido:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Leer una fila de cartas
+        run: |
+          CODIGO=$(curl -sS -o /tmp/r.json -w "%{http_code}" \
+            "https://jfekxykuasvmanmolbwg.supabase.co/rest/v1/cartas?select=id&limit=1" \
+            -H "apikey: sb_publishable_0tjN9mXrJJzLRGt_c51QxQ_mDV9FTph" -H "Authorization: Bearer sb_publishable_0tjN9mXrJJzLRGt_c51QxQ_mDV9FTph")
+          echo "HTTP $CODIGO"; cat /tmp/r.json; echo
+          if [ "$CODIGO" != "200" ]; then
+            echo "::error::Cartas no respondio bien (HTTP $CODIGO). Revisa Supabase."
+            exit 1
+          fi
