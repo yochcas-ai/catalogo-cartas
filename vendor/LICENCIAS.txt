@@ -1,0 +1,5 @@
+Archivos de terceros incluidos en el repo para no depender de CDN externos.
+- Quicksand 5.3.0 (@fontsource/quicksand), licencia SIL OFL 1.1. Subconjunto latin, pesos 400/500/600/700.
+- Luckiest Guy 5.3.0 (@fontsource/luckiest-guy), licencia Apache 2.0. Subconjunto latin, peso 400.
+- supabase.js = @supabase/supabase-js 2.119.0 (build UMD), licencia MIT.
+Para actualizar: bajar la nueva versión de npm y reemplazar el archivo (queda fijo hasta que se haga a propósito).
