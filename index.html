@@ -233,7 +233,7 @@ const ETIQ={Todas:'Todas',PSA:'PSA',CGC:'CGC',Chinas:'Grading China'};
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[kk,v]of Object.entries(a)){if(kk==='class')e.className=v;else if(kk.startsWith('on'))e.addEventListener(kk.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(kk,v)}k.flat().forEach(c=>e.append(c?.nodeType?c:document.createTextNode(c??'')));return e};
 const soles=n=>'S/ '+Number(n).toLocaleString('es-PE',{maximumFractionDigits:2});
-const safeUrl=u=>{try{const x=new URL(u);return x.origin===SB_URL?x.href:''}catch{return ''}};
+const safeUrl=u=>{try{if(!u)return '';const x=new URL(u,location.href);return (x.origin===SB_URL||x.origin===location.origin)?x.href:''}catch{return ''}};
 
 let cartas=[],tab=null,cart=[]; // cart: ids
 const store={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v)}catch{}}};
